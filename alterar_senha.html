@@ -1,0 +1,70 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alterar senha - INSEL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main class="container">
+        <h1>Alterar minha senha</h1>
+        <p>Informe sua senha atual e escolha uma nova senha.</p>
+
+        {% with mensagens = get_flashed_messages(with_categories=true) %}
+            {% if mensagens %}
+                {% for categoria, mensagem in mensagens %}
+                    <div class="mensagem {{ categoria }}">
+                        {{ mensagem }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('alterar_senha') }}">
+            <div>
+                <label for="senha_atual">Senha atual</label>
+                <input
+                    type="password"
+                    id="senha_atual"
+                    name="senha_atual"
+                    autocomplete="current-password"
+                    required
+                >
+            </div>
+
+            <div>
+                <label for="nova_senha">Nova senha</label>
+                <input
+                    type="password"
+                    id="nova_senha"
+                    name="nova_senha"
+                    minlength="8"
+                    autocomplete="new-password"
+                    required
+                >
+                <small>Use pelo menos 8 caracteres.</small>
+            </div>
+
+            <div>
+                <label for="confirmar_senha">Confirme a nova senha</label>
+                <input
+                    type="password"
+                    id="confirmar_senha"
+                    name="confirmar_senha"
+                    minlength="8"
+                    autocomplete="new-password"
+                    required
+                >
+            </div>
+
+            <button type="submit">Salvar nova senha</button>
+        </form>
+
+        <p>
+            <a href="{{ url_for('inicio') }}">Voltar ao início</a>
+        </p>
+    </main>
+</body>
+</html>

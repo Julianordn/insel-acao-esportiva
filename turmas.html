@@ -1,0 +1,748 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Turmas | Ação Esportiva - INSEL</title>
+
+    <style>
+        :root {
+            --primary: #17365d;
+            --primary-dark: #102744;
+            --accent: #2563eb;
+            --background: #f3f6fb;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --success-bg: #dcfce7;
+            --success-text: #166534;
+            --danger-bg: #fee2e2;
+            --danger-text: #991b1b;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 32px 18px;
+            background: var(--background);
+            color: var(--text);
+            font-family: "Segoe UI", Arial, sans-serif;
+            line-height: 1.5;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1180px;
+            margin: 0 auto;
+        }
+
+        .topbar, .brand, .card-header, .list-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .topbar {
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 26px;
+        }
+
+        .brand { gap: 14px; }
+
+        .brand-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 54px;
+            height: 54px;
+            flex-shrink: 0;
+            border-radius: 14px;
+            background: var(--primary);
+            color: white;
+            font-size: 25px;
+            font-weight: 800;
+        }
+
+        .brand h1 {
+            margin: 0;
+            color: var(--primary-dark);
+            font-size: 27px;
+            line-height: 1.2;
+        }
+
+        .brand p {
+            margin: 5px 0 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 16px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: white;
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .back-link:hover { background: #eff6ff; }
+
+        .page-intro { margin-bottom: 24px; }
+        .page-intro h2 { margin: 0 0 5px; font-size: 22px; }
+        .page-intro p { margin: 0; color: var(--muted); }
+
+        .card {
+            margin-bottom: 24px;
+            padding: 26px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: var(--surface);
+            box-shadow: 0 5px 18px rgba(15, 23, 42, 0.04);
+        }
+
+        .card-header, .list-header {
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .card-header h2, .list-header h2 {
+            margin: 0;
+            color: var(--primary-dark);
+            font-size: 20px;
+        }
+
+        .card-header p, .list-header p {
+            margin: 5px 0 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .section-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: #eff6ff;
+            color: var(--accent);
+            font-weight: 800;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            min-width: 0;
+        }
+
+        .field.full { grid-column: 1 / -1; }
+
+        .field label {
+            color: #334155;
+            font-size: 14px;
+            font-weight: 650;
+        }
+
+        .field input, .field select {
+            width: 100%;
+            min-height: 45px;
+            padding: 11px 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            outline: none;
+            background: white;
+            color: var(--text);
+            font: inherit;
+        }
+
+        .field input:focus, .field select:focus, .search-box:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        .field select:disabled {
+            background: #f1f5f9;
+            color: #64748b;
+            cursor: not-allowed;
+        }
+
+        .help { color: var(--muted); font-size: 12px; }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 24px;
+        }
+
+        .btn-primary, .btn-secondary, .btn-edit, .btn-danger {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 7px;
+            min-height: 38px;
+            padding: 9px 13px;
+            border: 0;
+            border-radius: 8px;
+            font: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            min-height: 46px;
+            padding: 12px 22px;
+            background: var(--primary);
+            color: white;
+            font-size: 15px;
+        }
+
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-primary:disabled { opacity: 0.6; cursor: wait; }
+        .btn-secondary { background: #e2e8f0; color: #334155; }
+        .btn-edit { background: #dbeafe; color: #1d4ed8; }
+        .btn-danger { background: var(--danger-bg); color: var(--danger-text); }
+
+        .actions {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 7px;
+        }
+
+        .actions form { margin: 0; }
+
+        .messages { margin-bottom: 20px; }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 12px 15px;
+            border-radius: 9px;
+            border: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        .message.success, .message.sucesso {
+            background: var(--success-bg);
+            color: var(--success-text);
+        }
+
+        .message.error, .message.erro, .message.danger {
+            background: var(--danger-bg);
+            color: var(--danger-text);
+        }
+
+        .message.warning, .message.aviso {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .list-header { align-items: center; margin-bottom: 20px; }
+
+        .counter {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 20px;
+            background: #eff6ff;
+            color: var(--primary);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .search-area { margin-bottom: 18px; }
+
+        .search-area label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 14px;
+            font-weight: 650;
+        }
+
+        .search-box {
+            width: 100%;
+            max-width: 420px;
+            min-height: 44px;
+            padding: 11px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            outline: none;
+            font: inherit;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .turmas-table {
+            width: 100%;
+            min-width: 980px;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .turmas-table th {
+            padding: 14px 16px;
+            background: #f8fafc;
+            color: #475569;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .turmas-table td {
+            padding: 16px;
+            border-top: 1px solid var(--border);
+            color: #475569;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        .turmas-table tbody tr:hover { background: #f8fbff; }
+        .main-text { color: var(--text); font-weight: 700; }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 7px;
+            background: #eff6ff;
+            color: #1d4ed8;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .project-text { color: var(--primary); font-weight: 650; }
+        .empty-state { padding: 38px 20px; text-align: center; }
+        .empty-state strong { display: block; margin-bottom: 6px; font-size: 17px; }
+        .empty-state p { margin: 0; color: var(--muted); }
+        .no-results { display: none; padding: 20px; color: var(--muted); text-align: center; }
+        .footer { padding: 8px 0 20px; color: var(--muted); font-size: 12px; text-align: center; }
+
+        @media (max-width: 700px) {
+            body { padding: 20px 12px; }
+            .brand h1 { font-size: 22px; }
+            .card { padding: 18px; }
+            .form-grid { grid-template-columns: 1fr; gap: 16px; }
+            .field.full { grid-column: auto; }
+            .form-actions .btn-primary, .form-actions .btn-secondary { width: 100%; }
+            .search-box { max-width: none; }
+            .turmas-table th, .turmas-table td { padding: 12px; }
+            .actions { align-items: stretch; flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+<main class="container">
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-icon" aria-hidden="true">I</div>
+            <div>
+                <h1>Gestão de Turmas</h1>
+                <p>Ação Esportiva · INSEL</p>
+            </div>
+        </div>
+        <a class="back-link" href="/">← Voltar ao início</a>
+    </header>
+
+    <section class="page-intro">
+        <h2>Cadastro e organização</h2>
+        <p>Organize as turmas por projeto, núcleo, modalidade e professor responsável.</p>
+    </section>
+
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+        {% if mensagens %}
+            <div class="messages" aria-live="polite">
+                {% for categoria, mensagem in mensagens %}
+                    <div class="message {{ categoria }}">{{ mensagem }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <section class="card">
+        <div class="card-header">
+            <div>
+                <h2>{{ 'Editar turma' if turma_edicao else 'Nova turma' }}</h2>
+                <p>
+                    {% if turma_edicao %}
+                        Altere os dados abaixo e salve as modificações.
+                    {% else %}
+                        Preencha os dados e vincule a turma ao projeto e ao núcleo correto.
+                    {% endif %}
+                </p>
+            </div>
+            <div class="section-number" aria-hidden="true">01</div>
+        </div>
+
+        <form
+            action="{{ url_for('editar_turma', turma_id=turma_edicao['id']) if turma_edicao else url_for('cadastrar_turma') }}"
+            method="POST"
+            id="form-turma"
+        >
+            <div class="form-grid">
+                <div class="field">
+                    <label for="projeto_id">Projeto *</label>
+                    <select name="projeto_id" id="projeto_id" required>
+                        <option value="">Selecione o projeto</option>
+                        {% for projeto in projetos %}
+                            <option value="{{ projeto['id'] }}"
+                                {% if turma_edicao and turma_edicao['projeto_id']|string == projeto['id']|string %}selected{% endif %}>
+                                {{ projeto['nome'] }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="nucleo_id">Núcleo / local do projeto *</label>
+                    <select name="nucleo_id" id="nucleo_id" required disabled <select id="nucleo_id" name="nucleo_id" required
+        data-nucleo-atual="{{ turma_edicao['nucleo_id'] if turma_edicao and turma_edicao['nucleo_id'] else '' }}">
+                        <option value="">Selecione primeiro o projeto</option>
+                    </select>
+                    <span class="help" id="ajuda-nucleo">
+                        Os núcleos serão carregados após selecionar o projeto.
+                    </span>
+                </div>
+
+                <div class="field">
+                    <label for="modalidade">Modalidade *</label>
+                    <input type="text" name="modalidade" id="modalidade" required maxlength="100"
+                           placeholder="Ex.: Muaythai, Futebol, Natação"
+                           value="{{ turma_edicao['modalidade'] if turma_edicao else '' }}">
+                </div>
+
+                <div class="field">
+                    <label for="nome">Nome da turma *</label>
+                    <input type="text" name="nome" id="nome" required maxlength="150"
+                           placeholder="Ex.: Muaythai - CT Ludus"
+                           value="{{ turma_edicao['nome'] if turma_edicao else '' }}">
+                </div>
+
+                <div class="field full">
+                    <label for="professor">Professor(a) responsável *</label>
+                    <input type="text" name="professor" id="professor" required maxlength="150"
+                           placeholder="Digite o nome do professor responsável"
+                           value="{{ turma_edicao['professor'] if turma_edicao else '' }}">
+                </div>
+            </div>
+
+            <div class="form-actions">
+                {% if turma_edicao %}
+                    <a class="btn-secondary" href="{{ url_for('turmas') }}">Cancelar edição</a>
+                {% endif %}
+                <button class="btn-primary" type="submit" id="botao-salvar">
+                    {{ 'Salvar alterações' if turma_edicao else '+ Cadastrar turma' }}
+                </button>
+            </div>
+        </form>
+    </section>
+'''
+
+    <!-- Lista de turmas -->
+    <section class="card">
+        <div class="list-header">
+            <div>
+                <h2>Turmas cadastradas</h2>
+                <p>Consulte, edite ou inative as turmas registradas no sistema.</p>
+            </div>
+
+            <span class="counter">{{ turmas|length }} turma(s)</span>
+        </div>
+
+        {% if turmas %}
+            <div class="search-area">
+                <label for="pesquisa-turma">Pesquisar turma</label>
+                <input
+                    type="search"
+                    id="pesquisa-turma"
+                    class="search-box"
+                    placeholder="Projeto, núcleo, modalidade, turma ou professor..."
+                    autocomplete="off"
+                >
+            </div>
+
+            <div class="table-wrapper">
+                <table class="turmas-table">
+                    <thead>
+                        <tr>
+                            <th>Projeto</th>
+                            <th>Núcleo</th>
+                            <th>Modalidade</th>
+                            <th>Turma</th>
+                            <th>Professor(a)</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="lista-turmas">
+                        {% for turma in turmas %}
+                            <tr class="linha-turma">
+                                <td>
+                                    <span class="project-text">
+                                        {{ turma['projeto_nome'] or '—' }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    {{ turma['nucleo_nome'] or 'Não informado' }}
+                                </td>
+
+                                <td>
+                                    <span class="badge">
+                                        {{ turma['modalidade'] or 'Não informada' }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="main-text">
+                                        {{ turma['nome'] }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    {{ turma['professor'] or 'Não informado' }}
+                                </td>
+
+                                <td>
+                                    <div class="actions">
+                                        <a
+                                            class="btn-edit"
+                                            href="{{ url_for('editar_turma', turma_id=turma['id']) }}"
+                                        >
+                                            Editar
+                                        </a>
+
+                                        <form
+                                            action="{{ url_for('inativar_turma', turma_id=turma['id']) }}"
+                                            method="POST"
+                                            onsubmit="return confirm('Tem certeza de que deseja inativar esta turma? Ela deixará de aparecer nas opções de novos registros, mas o histórico de frequências e atividades será preservado.');"
+                                        >
+                                            <button class="btn-danger" type="submit">
+                                                Inativar
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="no-results" id="sem-resultados">
+                Nenhuma turma corresponde à pesquisa.
+            </div>
+
+        {% else %}
+            <div class="empty-state">
+                <strong>Nenhuma turma cadastrada ainda</strong>
+                <p>Use o formulário acima para registrar a primeira turma.</p>
+            </div>
+        {% endif %}
+    </section>
+
+    <footer class="footer">
+        Ação Esportiva · INSEL — Sistema de gestão de projetos esportivos
+    </footer>
+</main>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const projetoSelect = document.getElementById("projeto_id");
+    const nucleoSelect = document.getElementById("nucleo_id");
+    const ajudaNucleo = document.getElementById("ajuda-nucleo");
+    const formTurma = document.getElementById("form-turma");
+    const botaoSalvar = document.getElementById("botao-salvar");
+
+    // Recupera o núcleo atual quando o formulário está no modo de edição.
+    const nucleoAtual = document.getElementById("nucleo_id").dataset.nucleoAtual || "";
+
+    let carregamentoEmAndamento = false;
+
+    function definirOpcaoInicial(texto) {
+        nucleoSelect.replaceChildren();
+
+        const opcao = document.createElement("option");
+        opcao.value = "";
+        opcao.textContent = texto;
+
+        nucleoSelect.appendChild(opcao);
+    }
+
+    async function atualizarNucleos() {
+        const projetoId = projetoSelect.value;
+
+        definirOpcaoInicial(
+            projetoId
+                ? "Carregando núcleos..."
+                : "Selecione primeiro o projeto"
+        );
+
+        nucleoSelect.disabled = true;
+        ajudaNucleo.textContent = "";
+
+        if (!projetoId) {
+            ajudaNucleo.textContent =
+                "Os núcleos serão carregados após selecionar o projeto.";
+            return;
+        }
+
+        carregamentoEmAndamento = true;
+
+        try {
+            const resposta = await fetch(
+                `/api/projetos/${encodeURIComponent(projetoId)}/nucleos`,
+                {
+                    headers: {
+                        "Accept": "application/json"
+                    }
+                }
+            );
+
+            if (!resposta.ok) {
+                throw new Error(`Erro HTTP ${resposta.status}`);
+            }
+
+            const nucleos = await resposta.json();
+
+            if (!Array.isArray(nucleos)) {
+                throw new Error("A resposta de núcleos não é uma lista válida.");
+            }
+
+            definirOpcaoInicial(
+                nucleos.length
+                    ? "Selecione o núcleo"
+                    : "Nenhum núcleo disponível"
+            );
+
+            nucleos.forEach(function (nucleo) {
+                const opcao = document.createElement("option");
+
+                opcao.value = nucleo.id;
+                opcao.textContent = nucleo.nome;
+
+                // Seleciona o núcleo já vinculado à turma editada.
+                if (
+                    nucleoAtual !== "" &&
+                    String(nucleo.id) === String(nucleoAtual)
+                ) {
+                    opcao.selected = true;
+                }
+
+                nucleoSelect.appendChild(opcao);
+            });
+
+            nucleoSelect.disabled = nucleos.length === 0;
+
+            ajudaNucleo.textContent = nucleos.length
+                ? `${nucleos.length} núcleo(s) disponível(is) para este projeto.`
+                : "Cadastre ou ative um núcleo para este projeto antes de cadastrar a turma.";
+
+            const nucleoEncontrado = nucleos.some(function (nucleo) {
+                return String(nucleo.id) === String(nucleoAtual);
+            });
+
+            if (nucleoAtual !== "" && !nucleoEncontrado) {
+                ajudaNucleo.textContent +=
+                    " O núcleo atual não está disponível; selecione outro núcleo ativo.";
+            }
+
+        } catch (erro) {
+            console.error("Erro ao carregar núcleos:", erro);
+
+            definirOpcaoInicial("Erro ao carregar núcleos");
+            nucleoSelect.disabled = true;
+
+            ajudaNucleo.textContent =
+                "Não foi possível carregar os núcleos. Verifique a conexão e tente novamente.";
+
+        } finally {
+            carregamentoEmAndamento = false;
+        }
+    }
+
+    // Carrega os núcleos sempre que o projeto for alterado.
+    projetoSelect.addEventListener("change", atualizarNucleos);
+
+    // Valida os campos antes de enviar o formulário.
+    formTurma.addEventListener("submit", function (evento) {
+        if (
+            carregamentoEmAndamento ||
+            !projetoSelect.value ||
+            !nucleoSelect.value ||
+            nucleoSelect.disabled
+        ) {
+            evento.preventDefault();
+
+            alert(
+                "Selecione um projeto e aguarde o carregamento de um núcleo válido antes de salvar a turma."
+            );
+        } else {
+            botaoSalvar.disabled = true;
+            botaoSalvar.textContent = "Salvando...";
+        }
+    });
+
+    // Carrega os núcleos ao abrir a página.
+    atualizarNucleos();
+
+    // Pesquisa instantânea de turmas.
+    const pesquisa = document.getElementById("pesquisa-turma");
+    const linhas = document.querySelectorAll(".linha-turma");
+    const semResultados = document.getElementById("sem-resultados");
+
+    if (pesquisa && semResultados) {
+        pesquisa.addEventListener("input", function () {
+            const termo = pesquisa.value
+                .trim()
+                .toLocaleLowerCase("pt-BR");
+
+            let encontrados = 0;
+
+            linhas.forEach(function (linha) {
+                const corresponde = linha.textContent
+                    .toLocaleLowerCase("pt-BR")
+                    .includes(termo);
+
+                linha.style.display = corresponde ? "" : "none";
+
+                if (corresponde) {
+                    encontrados++;
+                }
+            });
+
+            semResultados.style.display =
+                encontrados === 0 ? "block" : "none";
+        });
+    }
+});
+</script>
+
+</body>
+</html>

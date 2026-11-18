@@ -1,0 +1,24 @@
+# Ambiente virtual
+venv/
+.venv/
+
+# Chaves e configurações locais
+.env
+config_local.py
+
+# Bancos de dados
+*.db
+*.sqlite
+*.sqlite3
+
+# Backups
+*backup*
+*.bak
+
+# Arquivos temporários
+__pycache__/
+*.pyc
+.DS_Store
+
+# Permitir somente o banco fictício de demonstração
+!banco_demonstracao.db

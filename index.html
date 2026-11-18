@@ -1,0 +1,558 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ação Esportiva - INSEL</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        :root {
+            --verde: #173f35;
+            --verde-claro: #eaf2ef;
+            --fundo: #f3f6f5;
+            --texto: #202a27;
+            --texto-suave: #687570;
+            --borda: #e1e8e5;
+            --branco: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--fundo);
+            color: var(--texto);
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        .container {
+            width: min(1180px, calc(100% - 36px));
+            margin: 0 auto;
+            padding: 28px 0 44px;
+        }
+
+        .barra-superior {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+        }
+
+        .marca {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .marca-icone {
+            display: grid;
+            place-items: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: var(--verde);
+            color: white;
+            font-size: 25px;
+        }
+
+        .marca-nome {
+            margin: 0;
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .marca-subtitulo {
+            margin: 4px 0 0;
+            color: var(--texto-suave);
+            font-size: 12px;
+        }
+
+        .usuario-logado {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .usuario-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--texto-suave);
+            font-size: 14px;
+        }
+
+        .avatar {
+            display: grid;
+            place-items: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #e1eee9;
+            color: var(--verde);
+        }
+
+        .botao-sair {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 15px;
+            border: 1px solid #f0d6d6;
+            border-radius: 10px;
+            background: white;
+            color: #a62a2a;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+        .botao-sair:hover {
+            background: #fff1f1;
+        }
+
+        .boas-vindas {
+            position: relative;
+            overflow: hidden;
+            padding: 34px;
+            border-radius: 20px;
+            color: white;
+            background: linear-gradient(120deg, #173f35, #245b4c 65%, #2c6b59);
+            box-shadow: 0 12px 30px rgba(23, 63, 53, 0.13);
+        }
+
+        .boas-vindas::after {
+            content: "";
+            position: absolute;
+            width: 270px;
+            height: 270px;
+            right: -75px;
+            top: -105px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 50%;
+            box-shadow:
+                0 0 0 28px rgba(255, 255, 255, 0.035),
+                0 0 0 58px rgba(255, 255, 255, 0.025);
+        }
+
+        .boas-vindas-conteudo {
+            position: relative;
+            z-index: 1;
+            max-width: 720px;
+        }
+
+        .etiqueta {
+            display: inline-block;
+            margin-bottom: 15px;
+            padding: 7px 11px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.09);
+            color: #e7f4ef;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .boas-vindas h1 {
+            margin: 0;
+            font-size: clamp(27px, 4vw, 38px);
+            line-height: 1.15;
+            letter-spacing: -1px;
+        }
+
+        .boas-vindas p {
+            max-width: 600px;
+            margin: 13px 0 0;
+            color: #e0eee9;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .secao {
+            margin-top: 32px;
+        }
+
+        .secao-cabecalho {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .secao-cabecalho h2 {
+            margin: 0;
+            font-size: 19px;
+            letter-spacing: -0.4px;
+        }
+
+        .secao-cabecalho p {
+            margin: 5px 0 0;
+            color: var(--texto-suave);
+            font-size: 13px;
+        }
+
+        .indicadores {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .indicador {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 0;
+            padding: 20px;
+            border: 1px solid var(--borda);
+            border-radius: 15px;
+            background: var(--branco);
+            box-shadow: 0 4px 12px rgba(20, 45, 37, 0.025);
+        }
+
+        .indicador-icone {
+            display: grid;
+            place-items: center;
+            flex: 0 0 46px;
+            width: 46px;
+            height: 46px;
+            border-radius: 13px;
+            background: var(--verde-claro);
+            font-size: 22px;
+        }
+
+        .indicador-label {
+            margin: 0 0 6px;
+            color: var(--texto-suave);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .indicador-valor {
+            margin: 0;
+            font-size: 25px;
+            line-height: 1;
+            font-weight: 800;
+        }
+
+        .atalhos {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .atalho {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            min-height: 125px;
+            padding: 21px;
+            border: 1px solid var(--borda);
+            border-radius: 15px;
+            background: white;
+            color: inherit;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(20, 45, 37, 0.025);
+            transition: 0.2s ease;
+        }
+
+        .atalho:hover {
+            transform: translateY(-3px);
+            border-color: #b8d0c7;
+            box-shadow: 0 12px 24px rgba(20, 45, 37, 0.08);
+        }
+
+        .atalho-icone {
+            display: grid;
+            place-items: center;
+            flex: 0 0 48px;
+            width: 48px;
+            height: 48px;
+            border-radius: 13px;
+            background: var(--verde-claro);
+            font-size: 23px;
+        }
+
+        .atalho-texto {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .atalho h3 {
+            margin: 2px 0 7px;
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .atalho p {
+            margin: 0;
+            color: var(--texto-suave);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .atalho-seta {
+            color: #7a8a84;
+            font-size: 20px;
+        }
+
+        .rodape {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 34px;
+            padding-top: 18px;
+            border-top: 1px solid var(--borda);
+            color: #7b8782;
+            font-size: 12px;
+        }
+
+        @media (max-width: 900px) {
+            .indicadores {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .atalhos {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 560px) {
+            .container {
+                width: calc(100% - 24px);
+                padding-top: 18px;
+            }
+
+            .boas-vindas {
+                padding: 25px 21px;
+                border-radius: 16px;
+            }
+
+            .indicadores,
+            .atalhos {
+                grid-template-columns: 1fr;
+                gap: 11px;
+            }
+
+            .indicador {
+                padding: 16px;
+            }
+
+            .atalho {
+                min-height: auto;
+                padding: 17px;
+            }
+
+            .usuario-logado {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="container">
+
+        <header class="barra-superior">
+            <div class="marca">
+                <div class="marca-icone">🏅</div>
+                <div>
+                    <p class="marca-nome">AÇÃO ESPORTIVA</p>
+                    <p class="marca-subtitulo">
+                        INSEL · Gestão de projetos esportivos
+                    </p>
+                </div>
+            </div>
+
+            <div class="usuario-logado">
+                <div class="usuario-info">
+                    <div class="avatar">👤</div>
+                    <span>
+                        Olá, {{ session.get('usuario_nome', 'Usuário') }}!
+                    </span>
+                </div>
+
+                <a href="{{ url_for('logout') }}" class="botao-sair">
+                    Sair do sistema ↗
+                </a>
+            </div>
+        </header>
+
+        <section class="boas-vindas">
+            <div class="boas-vindas-conteudo">
+                <span class="etiqueta">PAINEL DE CONTROLE</span>
+
+                <h1>Bem-vindo ao Sistema Ação Esportiva</h1>
+
+                <p>
+                    Gerencie alunos, turmas, núcleos, atividades e frequência
+                    em um só lugar. Acompanhe as informações dos projetos
+                    esportivos de forma simples e organizada.
+                </p>
+            </div>
+        </section>
+
+        <section class="secao">
+            <div class="secao-cabecalho">
+                <div>
+                    <h2>Visão geral</h2>
+                    <p>Resumo dos principais registros do sistema.</p>
+                </div>
+            </div>
+
+            <div class="indicadores">
+                <article class="indicador">
+                    <div class="indicador-icone">👥</div>
+                    <div>
+                        <p class="indicador-label">Alunos ativos</p>
+                        <p class="indicador-valor">
+                            {{ total_alunos|default('—') }}
+                        </p>
+                    </div>
+                </article>
+
+                <article class="indicador">
+                    <div class="indicador-icone">🏫</div>
+                    <div>
+                        <p class="indicador-label">Turmas cadastradas</p>
+                        <p class="indicador-valor">
+                            {{ total_turmas|default('—') }}
+                        </p>
+                    </div>
+                </article>
+
+                <article class="indicador">
+                    <div class="indicador-icone">📍</div>
+                    <div>
+                        <p class="indicador-label">Núcleos ativos</p>
+                        <p class="indicador-valor">
+                            {{ total_nucleos|default('—') }}
+                        </p>
+                    </div>
+                </article>
+
+                <article class="indicador">
+                    <div class="indicador-icone">📋</div>
+                    <div>
+                        <p class="indicador-label">Atividades registradas</p>
+                        <p class="indicador-valor">
+                            {{ total_atividades|default('—') }}
+                        </p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="secao">
+            <div class="secao-cabecalho">
+                <div>
+                    <h2>Acesso rápido</h2>
+                    <p>Selecione uma área para continuar.</p>
+                </div>
+            </div>
+
+            <div class="atalhos">
+
+                <a class="atalho" href="{{ url_for('alunos') }}">
+                    <div class="atalho-icone">👥</div>
+                    <div class="atalho-texto">
+                        <h3>Alunos</h3>
+                        <p>
+                            Cadastre, consulte e acompanhe os dados dos beneficiários.
+                        </p>
+                    </div>
+                    <span class="atalho-seta">›</span>
+                </a>
+
+                <a class="atalho" href="{{ url_for('turmas') }}">
+                    <div class="atalho-icone">🏫</div>
+                    <div class="atalho-texto">
+                        <h3>Turmas</h3>
+                        <p>
+                            Organize modalidades, professores e turmas dos projetos.
+                        </p>
+                    </div>
+                    <span class="atalho-seta">›</span>
+                </a>
+
+                <a class="atalho" href="{{ url_for('nucleos') }}">
+                    <div class="atalho-icone">📍</div>
+                    <div class="atalho-texto">
+                        <h3>Núcleos</h3>
+                        <p>
+                            Gerencie os locais de atendimento dos projetos.
+                        </p>
+                    </div>
+                    <span class="atalho-seta">›</span>
+                </a>
+
+                <a class="atalho" href="{{ url_for('frequencia') }}">
+                    <div class="atalho-icone">📋</div>
+                    <div class="atalho-texto">
+                        <h3>Frequência</h3>
+                        <p>
+                            Registre presenças, faltas e justificativas dos alunos.
+                        </p>
+                    </div>
+                    <span class="atalho-seta">›</span>
+                </a>
+
+                <a class="atalho" href="{{ url_for('atividades') }}">
+                    <div class="atalho-icone">🗓️</div>
+                    <div class="atalho-texto">
+                        <h3>Atividades</h3>
+                        <p>
+                            Registre atividades, horários, locais e fotos das turmas.
+                        </p>
+                    </div>
+                    <span class="atalho-seta">›</span>
+                </a>
+
+                <a class="atalho" href="{{ url_for('relatorio') }}">
+                    <div class="atalho-icone">📊</div>
+                    <div class="atalho-texto">
+                        <h3>Relatório de frequência</h3>
+                        <p>
+                            Acompanhe presenças, faltas e indicadores por período.
+                        </p>
+                    </div>
+                    <span class="atalho-seta">›</span>
+                </a>
+
+                <a class="atalho" href="{{ url_for('relatorio_atividades') }}">
+                    <div class="atalho-icone">📈</div>
+                    <div class="atalho-texto">
+                        <h3>Relatório de atividades</h3>
+                        <p>
+                            Consulte as atividades registradas e os totais por período.
+                        </p>
+                    </div>
+                    <span class="atalho-seta">›</span>
+                </a>
+
+            </div>
+        </section>
+
+        <footer class="rodape">
+            <span>INSEL · Sistema Ação Esportiva</span>
+            <span>Gestão e acompanhamento de projetos esportivos</span>
+        </footer>
+
+    </main>
+</body>
+
+</html>
